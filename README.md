@@ -29,3 +29,37 @@ reply,reply_status=chatGPT.send_message("hello chat gpt ")
 chatGPT.live_chat()
 
 ```
+### get all chat history
+```python
+
+chat_gpt.clear_history()
+reply_message,reply_status=chat_gpt.send_message("hello chat-gpt")
+
+reply_message,reply_status=chat_gpt.send_message("do you know andalusia hospitals")
+
+
+chat_gpt.chat_history()
+
+```
+```
+user:
+hello chat-gpt
+
+----------
+
+chat-gpt:
+Hello! How can I assist you today?
+
+----------
+
+user:
+do you know andalusia hospitals
+
+----------
+
+chat-gpt:
+Yes, Andalusia is a region in southern Spain that has many hospitals and healthcare facilities. Some of the most well-known hospitals in Andalusia include Hospital Universitario Virgen del Rocío in Seville, Hospital Regional Universitario de Málaga, and Hospital Universitario Reina Sofía in Córdoba. There are many other hospitals and medical centers throughout the region, providing high-quality healthcare services to locals and tourists alike.
+
+----------
+
+```

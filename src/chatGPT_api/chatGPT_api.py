@@ -3,10 +3,11 @@ import time
 import openai
 
 
-class ChatGPTAPI:
+class ChatGPT:
 
     def __init__(self, api_key, model="gpt-3.5-turbo"):
         self._api_key = api_key
+        openai.api_key=api_key
         self._message_history = []
         self._model = model
         self.total_tokens = 0

@@ -6,42 +6,47 @@ import openai
 class ChatGPTAPI:
 
     def __init__(self, api_key, model="gpt-3.5-turbo"):
-        self.api_key = api_key
-        self.message_history = []
-        self.model = model
+        self._api_key = api_key
+        self._message_history = []
+        self._model = model
         self.total_tokens = 0
-        self.last_reply_message = None
-        self.last_reply_status = None
+        self._last_reply_message = None
+        self._last_reply_status = None
 
     def send_message(self, message):
-        self.message_history.append({"role": 'user', "content": message})
+        """
+
+        :param message: (str)
+        :return: message (str), reply status (str)
+        """
+        self._message_history.append({"role": 'user', "content": message})
 
         completion = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
-            messages=self.message_history)
+            messages=self._message_history)
         reply_message = completion.choices[0].message.content
         reply_status = completion.choices[0].finish_reason
 
         self.total_tokens = completion.usage.total_tokens
-        self.last_reply_message = reply_message
-        self.last_reply_status = reply_status
-        self.message_history.append(completion.choices[0].message)
+        self._last_reply_message = reply_message
+        self._last_reply_status = reply_status
+        self._message_history.append(completion.choices[0].message)
 
         return reply_message, reply_status
 
     def clear_history(self):
-        self.message_history = []
+        self._message_history = []
         self.total_tokens = 0
-        self.last_reply_message = self.last_reply_status = None
+        self._last_reply_message = self._last_reply_status = None
         print("History cleared")
 
     def last_reply(self):
-        summary_text=f"last_message:{self.last_reply_message}\n{'-' * 10}\nreply_status:{self.last_reply_status}\n{'-' * 10}\ntotal_tokens:{self.total_tokens}"
+        summary_text=f"last_message:{self._last_reply_message}\n{'-' * 10}\nreply_status:{self._last_reply_status}\n{'-' * 10}\ntotal_tokens:{self.total_tokens}"
         print(summary_text)
-        return self.last_reply_message,self.last_reply_status
+        return self._last_reply_message,self._last_reply_status
 
     def chat_history(self):
-        for message_dict in self.message_history:
+        for message_dict in self._message_history:
             sender = "user" if message_dict['role'] == 'user' else 'chat-gpt'
             print(f"{sender}:")
             print(message_dict['content'])

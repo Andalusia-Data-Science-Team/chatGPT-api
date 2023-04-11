@@ -29,13 +29,15 @@ class ChatGPT:
             try:
                 try_again = False
                 completion = openai.ChatCompletion.create(
-                    model="gpt-3.5-turbo",
+                    model=self._model,
                     messages=self._message_history)
             except APIConnectionError:
                 if try_count <= retry_count:
                     try_again = True
                     print(f"api connection error {try_count} trying after 5 sec..")
                     time.sleep(5)
+                else :
+                    raise APIConnectionError
 
         reply_message = completion.choices[0].message.content
         reply_status = completion.choices[0].finish_reason
@@ -81,3 +83,4 @@ class ChatGPT:
             print(message)
             print(f"\n{'-' * 10}\n")
             time.sleep(2)
+

@@ -6,7 +6,7 @@ from openai.error import APIConnectionError
 
 class ChatGPT:
 
-    def __init__(self, api_key, model="gpt-3.5-turbo"):
+    def __init__(self, api_key, model="gpt-3.5-turbo", silent=False):
         self._api_key = api_key
         openai.api_key = api_key
         self._message_history = []
@@ -14,6 +14,7 @@ class ChatGPT:
         self.total_tokens = 0
         self._last_reply_message = None
         self._last_reply_status = None
+        self.silent = silent
 
     def send_message(self, message):
         """
@@ -36,7 +37,7 @@ class ChatGPT:
                     try_again = True
                     print(f"api connection error {try_count} trying after 5 sec..")
                     time.sleep(5)
-                else :
+                else:
                     raise APIConnectionError
 
         reply_message = completion.choices[0].message.content
@@ -53,11 +54,13 @@ class ChatGPT:
         self._message_history = []
         self.total_tokens = 0
         self._last_reply_message = self._last_reply_status = None
-        print("History cleared")
+        if not self.silent:
+            print("History cleared")
 
     def last_reply(self):
         summary_text = f"last_message:{self._last_reply_message}\n{'-' * 10}\nreply_status:{self._last_reply_status}\n{'-' * 10}\ntotal_tokens:{self.total_tokens}"
-        print(summary_text)
+        if not self.silent:
+            print(summary_text)
         return self._last_reply_message, self._last_reply_status
 
     def chat_history(self):
@@ -83,4 +86,3 @@ class ChatGPT:
             print(message)
             print(f"\n{'-' * 10}\n")
             time.sleep(2)
-

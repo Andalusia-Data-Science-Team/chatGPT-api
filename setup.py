@@ -4,7 +4,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 setuptools.setup(
     name='chatGPT-api',
-    version='0.0.122',
+    version='0.0.123',
     author='Ahmed badr',
     author_email='ahmed.k.badr.97@gmail.com',
     description='chat gpt api',

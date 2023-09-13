@@ -4,6 +4,53 @@ import openai
 from openai.error import APIConnectionError
 
 
+class Completion:
+    def __init__(self, api_key, model="text-davinci-003", max_tokens=4048, silent=False):
+        self._api_key = api_key
+        openai.api_key = api_key
+        self._model = model
+        self.total_tokens = 0
+        self._max_tokens = max_tokens
+        self._last_reply_message = None
+        self._last_reply_status = None
+        self.silent = silent
+
+    def send_message(self, message):
+        """
+
+        :param message: (str)
+        :return: message (str), reply status (str)
+        """
+
+        try_again = True
+        retry_count = 5
+        try_count = 1
+        while try_again:
+            try:
+                try_again = False
+                completion = openai.Completion.create(engine=self._model, prompt=message, max_tokens=self._max_tokens)
+            except APIConnectionError:
+                if try_count <= retry_count:
+                    try_again = True
+                    print(f"api connection error {try_count} trying after 5 sec..")
+                    time.sleep(5)
+                else:
+                    raise APIConnectionError
+
+        reply_message = completion.choices[0]['text']
+
+        self.total_tokens += completion.usage.total_tokens
+        self._last_reply_message = reply_message
+
+        return reply_message
+
+    def last_reply(self):
+        summary_text = f"last_message:{self._last_reply_message}\n{'-' * 10}\ntotal_tokens:{self.total_tokens}"
+        if not self.silent:
+            print(summary_text)
+        return self._last_reply_message
+
+
 class ChatGPT:
 
     def __init__(self, api_key, model="gpt-3.5-turbo", silent=False):
